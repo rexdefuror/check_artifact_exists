@@ -17,7 +17,7 @@ const main = async () => {
     });
 
     const artifactExists = artifact.data.artifacts.some((artifact) => artifact.name === name);
-    exportVariable('artifact_exists', artifactExists);
+    exportVariable('ARTIFACT_EXISTS', artifactExists);
 };
 
 main();

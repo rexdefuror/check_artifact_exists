@@ -9,6 +9,15 @@ inputs:
   name:
     description: "Artifact name"
     required: true
+  owner:
+    description: "Repository owner"
+    required: true
+  repo:
+    description: "Repository name"
+    required: true
+  token:
+    description: "GitHub token"
+    required: true
 
 runs:
   using: "node16"
