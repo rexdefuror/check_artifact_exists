@@ -8,7 +8,7 @@ This is a simple Github action that checks if an artifact exists in a repository
 ## Example Usage
 
 ```yaml
-- name: Package.json info
+- name: Check if artifact exists
   uses: rexdefuror/check_artifact_exists@v1.0.1
   with:
     token: ${{ secrets.GITHUB_TOKEN }}
