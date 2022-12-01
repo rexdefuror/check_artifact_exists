@@ -1,0 +1,15 @@
+name: "Check if artifact exists"
+author: "rexdefuror"
+description: "GitHub Action that checks if an artifact with specified name exists"
+branding:
+  icon: "target"
+  color: "green"
+
+inputs:
+  name:
+    description: "Artifact name"
+    required: true
+
+runs:
+  using: "node16"
+  main: "dist/index.js"

@@ -1,0 +1,67 @@
+name: Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run action
+      - name: Package.json info
+        uses: rexdefuror/read-package-json@v1.0.5
+      - name: Tag commit
+        if: env.PACKAGE_VERSION != ''
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const version = '${{ env.PACKAGE_VERSION }}'
+            const tag = `v${version}`
+            const commit = context.sha
+            const owner = context.repo.owner
+            const repo = context.repo.repo
+            const tagExists = await github.rest.git.getRef({
+              owner,
+              repo,
+              ref: `tags/${tag}`,
+            })
+            .then(() => true)
+            .catch(() => false)
+            if (tagExists) {
+              console.log(`Tag ${tag} already exists`)
+              core.exportVariable('TAGGING', false)
+              return;
+            }
+            await github.rest.git.createRef({
+              owner,
+              repo,
+              ref: `refs/tags/${tag}`,
+              sha: commit,
+            })
+            console.log(`Tag ${tag} created`)
+            core.exportVariable('TAGGING', true)
+      - name: Create release
+        if: env.TAGGING == 'true'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.RELEASE_TOKEN}}
+          script: |
+            const version = 'v${{ env.PACKAGE_VERSION }}'
+            const newRelease = await github.rest.repos.createRelease({
+              owner: 'rexdefuror',
+              repo: 'check_artifact_exists',
+              tag_name: version,
+              name: version,
+              body: 'Release check_artifact_exists version ' + '${{ env.PACKAGE_VERSION }}'
+            })
