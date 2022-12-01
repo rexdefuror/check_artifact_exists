@@ -21,10 +21,18 @@ This is a simple Github action that checks if an artifact exists in a repository
 
 ## Inputs
 
-### `file`
+### `token`
 
-**Optional** The name of the file to read. Default `"package.json"`.
+**Required** The Github token to use for authentication.
 
-### `path`
+### `owner`
 
-**Optional** The path to the file. Default `"./"`.
+**Required** The owner of the repository.
+
+### `repo`
+
+**Required** The name of the repository.
+
+### `name`
+
+**Required** The name of the artifact to check.
